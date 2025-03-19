@@ -2,6 +2,7 @@ package org.utils;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class WebDriverManager {
 
@@ -9,8 +10,9 @@ public class WebDriverManager {
 
     public WebDriver initializeDriver() {
         if (driver == null) {
-            System.setProperty("webdriver.chrome.driver", "/Users/freddelabre/chromedriver");
-            driver = new ChromeDriver();
+/*            String chromeDriverPath = System.getProperty("webdriver.chrome.driver", "/Users/freddelabre/chromedriver");
+            System.setProperty("webdriver.chrome.driver", chromeDriverPath);*/
+            driver = new FirefoxDriver();
             driver.manage().window().maximize();
         }
         return driver;
@@ -22,6 +24,7 @@ public class WebDriverManager {
         } else {
             System.out.println("WebDriver n'est pas initialisé.");
         }
+        System.out.println("I go to the Demoblaze home page");
     }
 
     public void closeDriver() {

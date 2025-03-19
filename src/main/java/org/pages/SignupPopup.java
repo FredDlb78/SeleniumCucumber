@@ -1,0 +1,64 @@
+package org.pages;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+import static org.junit.Assert.assertTrue;
+
+public class SignupPopup extends AbstractPage {
+
+    private WebDriver driver;
+
+    @FindBy(id = "sign-username")
+    private WebElement usernameInput;
+    @FindBy(id = "sign-password")
+    private WebElement passwordInput;
+    @FindBy(css = "button[onclick='register()']")
+    private WebElement signUpButton;
+    @FindBy(xpath = "//div[@id='signInModal']//div[@class='modal-content']//span[contains(text(), '×')]")
+    private WebElement crossButton;
+    @FindBy(xpath = "//div[@id='signInModal']//button[contains(text(), 'Close')]")
+    private WebElement closeButton;
+    @FindBy(id = "signInModalLabel")
+    private WebElement signUpPopupTitle;
+
+    public SignupPopup(WebDriver driver) {
+        super(driver);
+        this.driver = driver;
+        PageFactory.initElements(driver, this);
+    }
+
+    public void setUsername(String username) {
+        usernameInput.click();
+        usernameInput.clear();
+        usernameInput.sendKeys(username);
+    }
+
+    public void setPassword(String password) {
+        passwordInput.click();
+        passwordInput.clear();
+        passwordInput.sendKeys(password);
+    }
+
+    public void clickSignUpButton() {
+        signUpButton.click();
+    }
+
+    public void iSignupWithCredentials(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+        clickSignUpButton();
+    }
+
+    public void signupTitleIsVisible() {
+        assertTrue("Signup popup title should be visible", signUpPopupTitle.isDisplayed());
+    }
+
+
+    public void iAmSignedUpSuccessfully() {
+        acceptAndVerifyAlertText("Sign up successful", "Sign up failed");
+        System.out.println("I am signed up successfully");
+    }
+}

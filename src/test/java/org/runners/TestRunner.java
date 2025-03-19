@@ -6,9 +6,10 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "src/test/resources/features",  // Chemin vers les fichiers .feature
-        glue = "src/test/java/org/stepdefinitions", // Assure-toi que glue pointe vers le bon package pour les step definitions
-        plugin = {"pretty", "html:target/cucumber-reports.html"} // Optionnel : Génération des rapports
+        features = "src/test/resources/features",
+        glue = "org.stepdefinitions",
+        plugin = {"pretty", "html:target/cucumber-reports.html"},
+        monochrome = true
 )
 public class TestRunner {
 }
