@@ -6,9 +6,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
+import org.pages.HomePage;
 import org.pages.SignupPopup;
 import org.utils.WebDriverManager;
-import org.pages.HomePage;
 
 public class SignupSteps {
 
@@ -16,7 +16,6 @@ public class SignupSteps {
     private WebDriverManager webDriverManager;
     private HomePage homePage;
     private SignupPopup signupPopup;
-
     @Before
     public void setUp() {
         webDriverManager = new WebDriverManager();
@@ -30,7 +29,7 @@ public class SignupSteps {
         webDriverManager.iGoToDemoblazeHomePage();
     }
 
-    @Then("I click on the signup menu")
+    @When("I click on the signup menu")
     public void iClickOnTheSignupMenu() {
         homePage.iClickOnSignupMenu();
     }
@@ -38,11 +37,6 @@ public class SignupSteps {
     @Then("The signup popup is opened")
     public void signupPopupIsOpened() {
         signupPopup.signupTitleIsVisible();
-    }
-
-    @When("I signup with <string> and <string>")
-    public void iSignupWithCredentials(String username, String password) {
-        signupPopup.iSignupWithCredentials(username, password);
     }
 
     @Then("The user is signed up successfully")
@@ -54,4 +48,10 @@ public class SignupSteps {
     public void tearDown() {
         webDriverManager.closeDriver();
     }
+
+    @When("^I sign up with (.*) and (.*)$")
+    public void iSignUpWithUsernameAndPassword(String username, String password) {
+        signupPopup.iSignUpWithUsernameAndPassword(username, password);
+    }
+
 }

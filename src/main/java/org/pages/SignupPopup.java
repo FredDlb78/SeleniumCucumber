@@ -46,7 +46,7 @@ public class SignupPopup extends AbstractPage {
         signUpButton.click();
     }
 
-    public void iSignupWithCredentials(String username, String password) {
+    public void iSignUpWithUsernameAndPassword(String username, String password) {
         setUsername(username);
         setPassword(password);
         clickSignUpButton();
@@ -54,6 +54,7 @@ public class SignupPopup extends AbstractPage {
 
     public void signupTitleIsVisible() {
         assertTrue("Signup popup title should be visible", signUpPopupTitle.isDisplayed());
+        System.out.println("Signup popup is opened");
     }
 
 
