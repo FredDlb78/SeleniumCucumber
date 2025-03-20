@@ -16,6 +16,7 @@ public class SignupSteps {
     private WebDriverManager webDriverManager;
     private HomePage homePage;
     private SignupPopup signupPopup;
+
     @Before
     public void setUp() {
         webDriverManager = new WebDriverManager();
@@ -39,6 +40,11 @@ public class SignupSteps {
         signupPopup.signupTitleIsVisible();
     }
 
+    @When("I sign up with a new random account")
+    public void iSignUpWithANewRandomAccount() {
+        signupPopup.iSignUpWithANewRandomAccount();
+    }
+
     @Then("The user is signed up successfully")
     public void iAmSignedUpSuccessfully() {
         signupPopup.iAmSignedUpSuccessfully();
@@ -48,10 +54,4 @@ public class SignupSteps {
     public void tearDown() {
         webDriverManager.closeDriver();
     }
-
-    @When("^I sign up with (.*) and (.*)$")
-    public void iSignUpWithUsernameAndPassword(String username, String password) {
-        signupPopup.iSignUpWithUsernameAndPassword(username, password);
-    }
-
 }

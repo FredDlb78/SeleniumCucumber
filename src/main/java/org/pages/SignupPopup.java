@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.utils.AccountFactory;
 
 import static org.junit.Assert.assertTrue;
 
@@ -46,10 +47,16 @@ public class SignupPopup extends AbstractPage {
         signUpButton.click();
     }
 
-    public void iSignUpWithUsernameAndPassword(String username, String password) {
+    public void iSignUpWithANewRandomAccount() {
+        AccountFactory.newAccount();
+
+        String username = AccountFactory.getUsername();
+        String password = AccountFactory.getPassword();
+
         setUsername(username);
         setPassword(password);
         clickSignUpButton();
+        System.out.println("Signing up with: " + username + " / " + password);
     }
 
     public void signupTitleIsVisible() {
@@ -57,9 +64,8 @@ public class SignupPopup extends AbstractPage {
         System.out.println("Signup popup is opened");
     }
 
-
     public void iAmSignedUpSuccessfully() {
-        acceptAndVerifyAlertText("Sign up successful", "Sign up failed");
+        acceptAndVerifyAlertText("Sign up successful.", "Sign up failed");
         System.out.println("I am signed up successfully");
     }
 }
