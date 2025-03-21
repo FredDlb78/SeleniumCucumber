@@ -18,7 +18,7 @@ public class WebDriverManager {
         return driver;
     }
 
-    public void iGoToDemoblazeHomePage() {
+    public void iAmOnDemoblazeHomePage() {
         if (driver != null) {
             driver.get("https://www.demoblaze.com/index.html");
         } else {

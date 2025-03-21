@@ -25,9 +25,9 @@ public class SignupSteps {
         signupPopup = new SignupPopup(driver);
     }
 
-    @Given("I go to the Demoblaze home page")
-    public void iGoToDemoblazeHomePage() {
-        webDriverManager.iGoToDemoblazeHomePage();
+    @Given("I am on the Demoblaze home page")
+    public void iAmOnDemoblazeHomePage() {
+        webDriverManager.iAmOnDemoblazeHomePage();
     }
 
     @When("I click on the signup menu")
