@@ -45,10 +45,34 @@ public class SignupSteps {
         signupPopup.iSignUpWithANewRandomAccount();
     }
 
+    @When("I sign up with {string} and {string}")
+    public void iSignUpWith(String username, String password) {
+        signupPopup.iSignUpWithInvalidCredentials(username, password);
+    }
+
     @Then("The user is signed up successfully")
     public void iAmSignedUpSuccessfully() {
         signupPopup.iAmSignedUpSuccessfully();
     }
+
+    @Then("The user is not signed up successfully with {string} and {string} is displayed")
+    public void theUserIsNotSignedUpSuccessfully(String invalidCredentials, String errorMessage) {
+        switch (invalidCredentials) {
+            case "an existing user":
+                signupPopup.iSignedUpWithAnExistingAccount(errorMessage.trim());
+                break;
+            case "an empty username":
+                signupPopup.iSignedUpWithAnEmptyUsernameOrPassword(errorMessage.trim());
+                break;
+            case "an empty password":
+                signupPopup.iSignedUpWithAnEmptyUsernameOrPassword(errorMessage.trim());
+                break;
+            default:
+                signupPopup.iAmNotSignedUpSuccessfully(errorMessage);
+                break;
+        }
+    }
+
 
     @After
     public void tearDown() {

@@ -21,12 +21,17 @@ public class AbstractPage {
         PageFactory.initElements(driver, this);
     }
 
+    protected void waitForElementToBeVisible(WebElement element) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
     public void acceptAndVerifyAlertText(String expectedAlertText, String errorMessage) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
             wait.until(ExpectedConditions.alertIsPresent());
             String alertText = driver.switchTo().alert().getText();
-            if (!alertText.equals(expectedAlertText)) {
+            if (!alertText.equals(expectedAlertText.trim())) {
                 throw new AssertionError(errorMessage);
             }
             driver.switchTo().alert().accept();

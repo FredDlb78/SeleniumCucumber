@@ -59,7 +59,15 @@ public class SignupPopup extends AbstractPage {
         System.out.println("Signing up with: " + username + " / " + password);
     }
 
+    public void iSignUpWithInvalidCredentials(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+        clickSignUpButton();
+        System.out.println("Signing up with: " + username + " / " + password);
+    }
+
     public void signupTitleIsVisible() {
+        waitForElementToBeVisible(signUpPopupTitle);
         assertTrue("Signup popup title should be visible", signUpPopupTitle.isDisplayed());
         System.out.println("Signup popup is opened");
     }
@@ -67,5 +75,20 @@ public class SignupPopup extends AbstractPage {
     public void iAmSignedUpSuccessfully() {
         acceptAndVerifyAlertText("Sign up successful.", "Sign up failed");
         System.out.println("I am signed up successfully");
+    }
+
+    public void iAmNotSignedUpSuccessfully(String errorMessage) {
+        acceptAndVerifyAlertText(errorMessage, "Sign up failed");
+        System.out.println("I am not signed up successfully");
+    }
+
+    public void iSignedUpWithAnExistingAccount(String errorMessage) {
+        acceptAndVerifyAlertText(errorMessage, "Sign up failed");
+        System.out.println("I signed up with an existing account");
+    }
+
+    public void iSignedUpWithAnEmptyUsernameOrPassword(String errorMessage) {
+        acceptAndVerifyAlertText(errorMessage, "Sign up failed");
+        System.out.println("I signed up with an empty username or password");
     }
 }
