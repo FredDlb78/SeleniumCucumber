@@ -13,21 +13,19 @@ import org.utils.WebDriverManager;
 public class SignupSteps {
 
     private WebDriver driver;
-    private WebDriverManager webDriverManager;
     private HomePage homePage;
     private SignupPopup signupPopup;
 
     @Before
     public void setUp() {
-        webDriverManager = new WebDriverManager();
-        driver = webDriverManager.initializeDriver();
+        driver = WebDriverManager.getDriver();
         homePage = new HomePage(driver);
         signupPopup = new SignupPopup(driver);
     }
 
     @Given("I am on the Demoblaze home page")
     public void iAmOnDemoblazeHomePage() {
-        webDriverManager.iAmOnDemoblazeHomePage();
+        homePage.iGoToDemoblazeHomePage();
     }
 
     @When("I click on the signup menu")
@@ -75,6 +73,6 @@ public class SignupSteps {
 
     @After
     public void tearDown() {
-        webDriverManager.closeDriver();
+        WebDriverManager.closeDriver();
     }
 }

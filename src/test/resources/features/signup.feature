@@ -1,3 +1,4 @@
+@Signup
 Feature: Signup
 
   Scenario: User can sign up with a new account

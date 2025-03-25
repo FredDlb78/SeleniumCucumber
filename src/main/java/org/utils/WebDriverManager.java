@@ -5,9 +5,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class WebDriverManager {
 
-    private WebDriver driver;
+    private static WebDriver driver;
 
-    public WebDriver initializeDriver() {
+    public static WebDriver getDriver() {
         if (driver == null) {
 /*            String chromeDriverPath = System.getProperty("webdriver.chrome.driver", "/Users/freddelabre/chromedriver");
             System.setProperty("webdriver.chrome.driver", chromeDriverPath);*/
@@ -26,7 +26,7 @@ public class WebDriverManager {
         System.out.println("I go to the Demoblaze home page");
     }
 
-    public void closeDriver() {
+    public static void closeDriver() {
         if (driver != null) {
             driver.quit();
             driver = null;
