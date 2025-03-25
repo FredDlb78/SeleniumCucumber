@@ -73,7 +73,6 @@ public class SignupSteps {
         }
     }
 
-
     @After
     public void tearDown() {
         webDriverManager.closeDriver();
