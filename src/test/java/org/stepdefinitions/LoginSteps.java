@@ -42,6 +42,16 @@ public class LoginSteps {
         homePage.iAmSuccessfullyLoggedIn(username);
     }
 
+    @When("I log in with a new random account")
+    public void iLogInWithANewRandomAccount() {
+        loginPopup.iLogInWithANewRandomAccount();
+    }
+
+    @Then("The user is not logged and the error message {string} is displayed")
+    public void iAmNotLoggedInSuccessfully(String errorMessage) {
+        loginPopup.iAmNotLoggedInSuccessfully(errorMessage);
+    }
+
     @After
     public void tearDown() {
         WebDriverManager.closeDriver();

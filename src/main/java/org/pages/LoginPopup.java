@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.utils.AccountFactory;
 
 public class LoginPopup extends AbstractPage {
 
@@ -47,5 +48,22 @@ public class LoginPopup extends AbstractPage {
         setPassword(password);
         clickLoginButton();
         System.out.println("Logging in with: " + username + " / " + password);
+    }
+
+    public void iLogInWithANewRandomAccount() {
+        AccountFactory.newAccount();
+
+        String username = AccountFactory.getUsername();
+        String password = AccountFactory.getPassword();
+
+        setUsername(username);
+        setPassword(password);
+        clickLoginButton();
+        System.out.println("Logging in with: " + username + " / " + password);
+    }
+
+    public void iAmNotLoggedInSuccessfully(String errorMessage) {
+        acceptAndVerifyAlertText(errorMessage, "User does not exist.");
+        System.out.println("I am not logged in successfully");
     }
 }
