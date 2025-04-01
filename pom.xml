@@ -38,82 +38,23 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- Allure Cucumber JVM Dependency -->
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-cucumber-jvm</artifactId>
-      <version>2.20.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- Allure Java Commons Dependency -->
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-java-commons</artifactId>
-      <version>2.20.1</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Allure Report Plugin -->
-      <plugin>
-        <groupId>io.qameta.allure</groupId>
-        <artifactId>allure-maven</artifactId>
-        <version>2.14.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>serve</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Maven Surefire Plugin for running tests -->
+      <!-- Cucumber Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
-          <!-- System properties to configure allure results -->
           <systemPropertyVariables>
-            <allure.results.directory>target/allure-results</allure.results.directory>
+            <cucumber.options>--plugin html:target/cucumber-reports/cucumber.html</cucumber.options>
           </systemPropertyVariables>
         </configuration>
       </plugin>
 
-      <!-- Cucumber Reporting Plugin -->
-      <plugin>
-        <groupId>net.masterthought</groupId>
-        <artifactId>maven-cucumber-reporting</artifactId>
-        <version>5.0.0</version>
-        <executions>
-          <execution>
-            <id>report</id>
-            <phase>verify</phase> <!-- We want the report generated during the 'verify' phase -->
-            <goals>
-              <goal>generate</goal>
-            </goals>
-            <configuration>
-              <projectName>SeleniumCucumber</projectName>
-              <outputDirectory>${project.build.directory}/cucumber-reports</outputDirectory>
-              <jsonFiles>${project.build.directory}/cucumber-reports/cucumber.json</jsonFiles>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Compiler Plugin for ensuring Java version compatibility -->
+      <!-- Compiler Plugin to ensure Java version compatibility -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

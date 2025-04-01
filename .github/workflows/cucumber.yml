@@ -2,7 +2,7 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '20 22 * * 2'  # Exécution tous les jours à 2h UTC
+    - cron: '20 22 * * 2'  # Exécution tous les mardis à 22h20 UTC
   push:
     branches:
       - main  # Exécution sur chaque push dans main
@@ -37,9 +37,6 @@ jobs:
 
       - name: Generate Cucumber Report (HTML)
         run: mvn verify -DskipTests -Dcucumber.options="--plugin html:target/cucumber-reports/cucumber.html --plugin json:target/cucumber-reports/cucumber.json"
-
-      - name: Generate Allure Report
-        run: mvn allure:serve
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
