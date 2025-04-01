@@ -2,7 +2,7 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '20 22 * * 2'  # Exécution tous les mardis à 22h20 UTC
+    5 23 1 * *  # Exécution le 2 de chaque mois à 22h20 UTC
   push:
     branches:
       - main  # Exécution sur chaque push dans main
