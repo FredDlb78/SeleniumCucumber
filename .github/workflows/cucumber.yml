@@ -2,7 +2,7 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '17 21 1 * *'  # Exécution le 1 de chaque mois à 23h10 UTC
+    - cron: '40 21 1 * *'  # Exécution le 1 de chaque mois à 23h40 UTC
   push:
     branches:
       - main  # Exécution sur chaque push dans main
@@ -49,3 +49,9 @@ jobs:
         with:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
+
+      - name: Send notification to Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{
+            "text": "Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/$(curl -s https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts | jq -r '.artifacts[0].id')"
+          }' $SLACK_WEBHOOK_URL
