@@ -2,13 +2,13 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '40 21 1 * *'  # Exécution le 1 de chaque mois à 23h40 UTC
+    - cron: '40 21 1 * *'  # Exécution le 1er de chaque mois à 23h40 UTC
   push:
     branches:
-      - main  # Exécution sur chaque push dans main
+      - main  # Exécution sur chaque push dans la branche main
   pull_request:
     branches:
-      - main  # Exécution pour chaque PR vers main
+      - main  # Exécution pour chaque PR vers la branche main
 
 jobs:
   test:
@@ -35,8 +35,12 @@ jobs:
       - name: Run Selenium & Cucumber tests
         run: mvn clean test
 
-      - name: Generate Cucumber Report (HTML)
+      - name: Generate Cucumber Report (HTML and JSON)
         run: mvn verify -DskipTests -Dcucumber.options="--plugin html:target/cucumber-reports/cucumber.html --plugin json:target/cucumber-reports/cucumber.json"
+
+      # Diagnostic: Lister les fichiers dans target pour vérifier la présence des rapports
+      - name: List files in target directory
+        run: ls -R target/
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
@@ -50,6 +54,7 @@ jobs:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
 
+      # Envoi de la notification Slack avec un lien dur pour tester la notification
       - name: Send notification to Slack
         run: |
           curl -X POST -H 'Content-type: application/json' --data '{"text": "Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : https://github.com/FredDlb78/SeleniumCucumber/actions/runs/14206603849/artifacts"}' https://hooks.slack.com/services/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
