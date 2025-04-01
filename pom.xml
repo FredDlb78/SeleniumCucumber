@@ -27,7 +27,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -55,6 +55,7 @@
         <version>3.0.0-M5</version>
         <configuration>
           <systemPropertyVariables>
+            <!-- Configuration pour les rapports HTML et JSON -->
             <cucumber.options>--plugin html:target/cucumber-reports/cucumber.html --plugin json:target/cucumber-reports/cucumber.json</cucumber.options>
           </systemPropertyVariables>
         </configuration>
