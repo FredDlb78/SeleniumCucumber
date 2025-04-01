@@ -54,6 +54,7 @@
       <version>2.20.1</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -78,7 +79,7 @@
         </executions>
       </plugin>
 
-      <!-- Surefire Plugin to run tests -->
+      <!-- Maven Surefire Plugin for running tests -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -91,7 +92,28 @@
         </configuration>
       </plugin>
 
-      <!-- Compiler Plugin to ensure Java version compatibility -->
+      <!-- Cucumber Reporting Plugin -->
+      <plugin>
+        <groupId>net.masterthought</groupId>
+        <artifactId>maven-cucumber-reporting</artifactId>
+        <version>5.0.0</version>
+        <executions>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase> <!-- We want the report generated during the 'verify' phase -->
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <projectName>SeleniumCucumber</projectName>
+              <outputDirectory>${project.build.directory}/cucumber-reports</outputDirectory>
+              <jsonFiles>${project.build.directory}/cucumber-reports/cucumber.json</jsonFiles>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiler Plugin for ensuring Java version compatibility -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
