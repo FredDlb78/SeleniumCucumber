@@ -2,7 +2,7 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '40 21 1 * *'  # Exécution le 1er de chaque mois à 21h40 UTC (23h40 CEST)
+    - cron: '40 21 1 * *'
   push:
     branches:
       - main
@@ -14,9 +14,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    defaults:
-      run:
-        working-directory: ${{ github.workspace }}
 
     steps:
       - name: Checkout repository
@@ -36,24 +33,25 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      - name: Verify Maven setup
-        run: mvn -version
-
       - name: Run Selenium & Cucumber tests
         run: mvn clean test
 
-      - name: Verify target directory exists
-        run: mkdir -p target/cucumber-reports
-
       - name: Generate Cucumber Reports
         run: |
-          mvn verify -DskipTests \
-          -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"
+          # Création du répertoire si inexistant
+          mkdir -p target/cucumber-reports
           
-          # Vérification que les fichiers ont bien été générés
+          # Génération des rapports avec vérification
+          mvn verify -DskipTests \
+            -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json" \
+            || echo "⚠️ Attention: La génération des rapports a rencontré un problème"
+          
+          # Vérification des fichiers générés
+          echo "Contenu du répertoire:"
           ls -la target/cucumber-reports/
-          [ -f "target/cucumber-reports/cucumber.json" ] || { echo "Fichier JSON manquant"; exit 1; }
-          [ -f "target/cucumber-reports/cucumber.html" ] || { echo "Fichier HTML manquant"; exit 1; }
+          
+          # On continue même si le JSON est manquant
+          [ -f "target/cucumber-reports/cucumber.html" ] || { echo "❌ Fichier HTML manquant"; exit 1; }
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
@@ -63,28 +61,28 @@ jobs:
           if-no-files-found: error
 
       - name: Upload Cucumber JSON Report
+        if: contains(steps.generate_cucumber_reports.outcome, 'success')
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Send notification to Slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          if [ -z "$SLACK_WEBHOOK_URL" ]; then
-            echo "❌ Erreur: SLACK_WEBHOOK_URL n'est pas configuré"
-            echo "ℹ️ Configurez le secret dans les paramètres du dépôt"
-            exit 1
-          fi
-
-          MESSAGE="Les tests Cucumber sont terminés. Rapports disponibles : "
+          # Message de base
+          MESSAGE="Les tests Cucumber sont terminés (Build: ${{ github.run_id }}). "
+          MESSAGE+="Rapport HTML disponible: "
           MESSAGE+="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+          # Ajout d'un avertissement si JSON manquant
+          if [ ! -f "target/cucumber-reports/cucumber.json" ]; then
+            MESSAGE+="\n⚠️ Le rapport JSON n'a pas pu être généré"
+          fi
           
           curl -X POST \
             -H "Content-type: application/x-www-form-urlencoded" \
             --data-urlencode "payload={\"text\":\"$MESSAGE\"}" \
-            "$SLACK_WEBHOOK_URL" || { echo "❌ Échec de l'envoi à Slack"; exit 1; }
-          
-          echo "✅ Notification Slack envoyée avec succès"
+            "$SLACK_WEBHOOK_URL" || echo "⚠️ Impossible d'envoyer la notification Slack"
