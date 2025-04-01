@@ -52,5 +52,4 @@ jobs:
 
       - name: Send notification to Slack
         run: |
-          ARTIFACT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : ${ARTIFACT_URL}\"}" ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text": "Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : https://github.com/FredDlb78/SeleniumCucumber/actions/runs/14206603849/artifacts"}' https://hooks.slack.com/services/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
