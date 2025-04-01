@@ -2,6 +2,9 @@ package org.utils;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class WebDriverManager {
 
@@ -9,10 +12,21 @@ public class WebDriverManager {
 
     public static WebDriver getDriver() {
         if (driver == null) {
-/*            String chromeDriverPath = System.getProperty("webdriver.chrome.driver", "/Users/freddelabre/chromedriver");
-            System.setProperty("webdriver.chrome.driver", chromeDriverPath);*/
-            driver = new FirefoxDriver();
-            driver.manage().window().maximize();
+            // Détection de l'environnement (local ou CI)
+            boolean isCI = System.getenv("GITHUB_ACTIONS") != null;
+
+            if (isCI) {
+                // Mode headless obligatoire sur GitHub Actions
+                FirefoxOptions options = new FirefoxOptions();
+                options.addArguments("--headless"); // Exécution sans interface graphique
+                options.addArguments("--disable-gpu");
+                options.addArguments("--window-size=1920,1080");
+                driver = new FirefoxDriver(options);
+            } else {
+                // Mode normal en local
+                driver = new FirefoxDriver();
+                driver.manage().window().maximize();
+            }
         }
         return driver;
     }
