@@ -52,10 +52,7 @@ jobs:
 
       - name: Send notification to Slack
         run: |
-          # Extraction de l'ID de l'artefact
           ARTIFACT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
-          
-          # Envoi du message via Slack Webhook
           curl -X POST -H 'Content-type: application/json' --data "{
             \"text\": \"Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : ${ARTIFACT_URL}\"
-          }" $SLACK_WEBHOOK_URL
+          }" ${{ secrets.SLACK_WEBHOOK_URL }}
