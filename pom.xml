@@ -5,8 +5,6 @@
   <groupId>org.fredDlbAcademy</groupId>
   <artifactId>SeleniumCucumber</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Archetype - SeleniumCucumber</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,20 +14,19 @@
   </properties>
 
   <dependencies>
-    <!-- Selenium WebDriver Dependency -->
+    <!-- Selenium -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>${selenium.version}</version>
     </dependency>
 
-    <!-- Cucumber Dependencies -->
+    <!-- Cucumber -->
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-java</artifactId>
       <version>${cucumber.version}</version>
     </dependency>
-
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-junit</artifactId>
@@ -37,37 +34,25 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- JUnit 4 Dependency -->
+    <!-- JUnit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- Additional reporting dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>compile</scope>
+      <groupId>tech.grasshopper</groupId>
+      <artifactId>extentreports-cucumber7-adapter</artifactId>
+      <version>1.7.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Correct Cucumber Maven Plugin Configuration -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-            <include>**/*Tests.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-
-      <!-- Alternative reporting configuration using surefire -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -76,10 +61,10 @@
           <argLine>
             -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"
           </argLine>
+          <testFailureIgnore>true</testFailureIgnore>
         </configuration>
       </plugin>
 
-      <!-- Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

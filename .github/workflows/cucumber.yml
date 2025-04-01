@@ -33,56 +33,59 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      - name: Run Selenium & Cucumber tests
-        run: mvn clean test
+      - name: Prepare reports directory
+        run: mkdir -p target/cucumber-reports
 
-      - name: Generate Cucumber Reports
+      - name: Run Tests with Reports Generation
         run: |
-          # Création du répertoire si inexistant
-          mkdir -p target/cucumber-reports
-          
-          # Génération des rapports avec vérification
-          mvn verify -DskipTests \
-            -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json" \
-            || echo "⚠️ Attention: La génération des rapports a rencontré un problème"
-          
-          # Vérification des fichiers générés
-          echo "Contenu du répertoire:"
-          ls -la target/cucumber-reports/
-          
-          # On continue même si le JSON est manquant
-          [ -f "target/cucumber-reports/cucumber.html" ] || { echo "❌ Fichier HTML manquant"; exit 1; }
+          mvn test -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"
+          # Fallback if HTML report not generated
+          if [ ! -f "target/cucumber-reports/cucumber.html" ]; then
+            echo "⚠️ HTML report not generated, trying alternative approach..."
+            mvn test -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html"
+          fi
 
-      - name: Upload Cucumber HTML Report
+      - name: Verify Reports
+        run: |
+          echo "Generated reports:"
+          ls -la target/cucumber-reports/
+          # Fail if no HTML report
+          if [ ! -f "target/cucumber-reports/cucumber.html" ]; then
+            echo "❌ Error: HTML report not found!"
+            exit 1
+          fi
+
+      - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-report
           path: target/cucumber-reports/cucumber.html
           if-no-files-found: error
 
-      - name: Upload Cucumber JSON Report
-        if: contains(steps.generate_cucumber_reports.outcome, 'success')
+      - name: Upload JSON Report
+        if: contains(steps.Verify_Reports.outcome, 'success')
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
           if-no-files-found: warn
 
-      - name: Send notification to Slack
+      - name: Send Slack Notification
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          # Message de base
-          MESSAGE="Les tests Cucumber sont terminés (Build: ${{ github.run_id }}). "
-          MESSAGE+="Rapport HTML disponible: "
-          MESSAGE+="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # Prepare message
+          REPORT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          MESSAGE="Tests Cucumber terminés (Run: ${{ github.run_id }})\n"
+          MESSAGE+="Rapport disponible: $REPORT_URL"
           
-          # Ajout d'un avertissement si JSON manquant
+          # Add warning if JSON missing
           if [ ! -f "target/cucumber-reports/cucumber.json" ]; then
-            MESSAGE+="\n⚠️ Le rapport JSON n'a pas pu être généré"
+            MESSAGE+="\n⚠️ Rapport JSON non généré"
           fi
           
-          curl -X POST \
+          # Send to Slack
+          curl -s -X POST \
             -H "Content-type: application/x-www-form-urlencoded" \
             --data-urlencode "payload={\"text\":\"$MESSAGE\"}" \
-            "$SLACK_WEBHOOK_URL" || echo "⚠️ Impossible d'envoyer la notification Slack"
+            "$SLACK_WEBHOOK_URL" || echo "⚠️ Notification Slack non envoyée"
