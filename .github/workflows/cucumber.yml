@@ -2,13 +2,13 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '40 21 1 * *'  # Exécution le 1er de chaque mois à 23h40 UTC
+    - cron: '40 21 1 * *'  # Exécution le 1er de chaque mois à 21h40 UTC (23h40 CEST)
   push:
     branches:
-      - main  # Exécution sur chaque push dans la branche main
+      - main
   pull_request:
     branches:
-      - main  # Exécution pour chaque PR vers la branche main
+      - main
 
 jobs:
   test:
@@ -35,14 +35,12 @@ jobs:
       - name: Run Selenium & Cucumber tests
         run: mvn clean test
 
-      # Diagnostic: Lister les fichiers dans target pour vérifier la présence des rapports
       - name: List files in target directory
         run: ls -R target/
 
       - name: Generate Cucumber Report (HTML and JSON)
-        run: mvn verify -DskipTests -Dcucumber.options="--plugin html:target/cucumber-reports/cucumber.html --plugin json:target/cucumber-reports/cucumber.json"
+        run: mvn verify -DskipTests -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"
 
-      # Uploading the Cucumber reports
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
         with:
@@ -55,7 +53,8 @@ jobs:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
 
-      # Envoi de la notification Slack avec le lien vers les rapports
       - name: Send notification to Slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text": "Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : https://github.com/FredDlb78/SeleniumCucumber/actions/runs/${{ github.run_id }}/artifacts"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/x-www-form-urlencoded' \
+          --data-urlencode 'payload={"text": "Les tests Cucumber sont terminés. Vous pouvez télécharger les rapports ici : https://github.com/FredDlb78/SeleniumCucumber/actions/runs/${{ github.run_id }}/artifacts"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
