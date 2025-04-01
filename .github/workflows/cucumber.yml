@@ -2,7 +2,7 @@ name: Run Cucumber Tests
 
 on:
   schedule:
-    - cron: '40 21 1 * *'
+    - cron: '40 21 1 * *'  # Exécution le 1er de chaque mois à 21h40 UTC
   push:
     branches:
       - main
@@ -39,19 +39,24 @@ jobs:
       - name: Run Tests with Reports Generation
         run: |
           mvn test -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"
-          # Fallback if HTML report not generated
+          
+          # Fallback if reports not generated
           if [ ! -f "target/cucumber-reports/cucumber.html" ]; then
-            echo "⚠️ HTML report not generated, trying alternative approach..."
+            echo "⚠️ HTML report not generated, retrying..."
             mvn test -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html"
+          fi
+          
+          if [ ! -f "target/cucumber-reports/cucumber.json" ]; then
+            echo "⚠️ JSON report not generated"
           fi
 
       - name: Verify Reports
         run: |
           echo "Generated reports:"
           ls -la target/cucumber-reports/
-          # Fail if no HTML report
+          
           if [ ! -f "target/cucumber-reports/cucumber.html" ]; then
-            echo "❌ Error: HTML report not found!"
+            echo "::error::HTML report missing!"
             exit 1
           fi
 
@@ -63,29 +68,37 @@ jobs:
           if-no-files-found: error
 
       - name: Upload JSON Report
-        if: contains(steps.Verify_Reports.outcome, 'success')
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
-          if-no-files-found: warn
+          if-no-files-found: ignore
 
       - name: Send Slack Notification
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          # Verify Slack configuration
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "::warning::Slack webhook not configured"
+            exit 0
+          fi
+
           # Prepare message
           REPORT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          MESSAGE="Tests Cucumber terminés (Run: ${{ github.run_id }})\n"
-          MESSAGE+="Rapport disponible: $REPORT_URL"
+          MESSAGE="*Cucumber Tests Completed* :rocket:\n"
+          MESSAGE+="• *Repository*: ${{ github.repository }}\n"
+          MESSAGE+="• *Run ID*: ${{ github.run_id }}\n"
+          MESSAGE+="• *HTML Report*: $REPORT_URL\n"
           
-          # Add warning if JSON missing
           if [ ! -f "target/cucumber-reports/cucumber.json" ]; then
-            MESSAGE+="\n⚠️ Rapport JSON non généré"
+            MESSAGE+="• *Warning*: JSON report missing\n"
           fi
           
-          # Send to Slack
+          MESSAGE+="\n_$(date -u)_"
+
+          # Send notification
           curl -s -X POST \
-            -H "Content-type: application/x-www-form-urlencoded" \
-            --data-urlencode "payload={\"text\":\"$MESSAGE\"}" \
-            "$SLACK_WEBHOOK_URL" || echo "⚠️ Notification Slack non envoyée"
+            -H "Content-type: application/json" \
+            --data "{\"text\":\"$MESSAGE\"}" \
+            "$SLACK_WEBHOOK_URL" && echo "Slack notification sent" || echo "::warning::Failed to send Slack notification"
