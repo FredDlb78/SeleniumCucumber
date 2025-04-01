@@ -23,20 +23,26 @@
       <version>7.12.1</version>
     </dependency>
 
-    <!-- Cucumber JUnit4 dependency -->
+    <!-- JUnit 4 Dependency -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Cucumber JUnit4 Dependency -->
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-junit</artifactId>
       <version>7.12.1</version>
       <scope>test</scope>
     </dependency>
-
-    <!-- JUnit 4 Dependency -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
