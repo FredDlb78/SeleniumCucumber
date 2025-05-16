@@ -39,27 +39,27 @@ public class OrderSteps {
         throw new io.cucumber.java.PendingException();
     }
 
-    @When("I confirm the popup")
-    public void i_confirm_the_popup() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-
-    @When("I click on the Cart menu")
-    public void i_click_on_the_cart_menu() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-
-    @When("I fill and confirm the form")
-    public void i_fill_and_confirm_the_form() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
-
-    @Then("A popup is displayed to confirm the order")
-    public void a_popup_is_displayed_to_confirm_the_order() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
+//    @When("I confirm the popup")
+//    public void i_confirm_the_popup() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("I click on the Cart menu")
+//    public void i_click_on_the_cart_menu() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("I fill and confirm the form")
+//    public void i_fill_and_confirm_the_form() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("A popup is displayed to confirm the order")
+//    public void a_popup_is_displayed_to_confirm_the_order() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
 }
