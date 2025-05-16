@@ -1,4 +1,4 @@
-name: Run Cucumber Tests
+name: Run Cucumber Tests & AI Gherkin Review
 
 on:
   schedule:
@@ -40,7 +40,6 @@ jobs:
         run: |
           mvn test -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html, json:target/cucumber-reports/cucumber.json"
           
-          # Fallback if reports not generated
           if [ ! -f "target/cucumber-reports/cucumber.html" ]; then
             echo "⚠️ HTML report not generated, retrying..."
             mvn test -Dcucumber.plugin="html:target/cucumber-reports/cucumber.html"
@@ -78,13 +77,11 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          # Verify Slack configuration
           if [ -z "$SLACK_WEBHOOK_URL" ]; then
             echo "::warning::Slack webhook not configured"
             exit 0
           fi
 
-          # Prepare message
           REPORT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           MESSAGE="*Cucumber Tests Completed* :rocket:\n"
           MESSAGE+="• *Repository*: ${{ github.repository }}\n"
@@ -97,8 +94,34 @@ jobs:
           
           MESSAGE+="\n_$(date -u)_"
 
-          # Send notification
           curl -s -X POST \
             -H "Content-type: application/json" \
             --data "{\"text\":\"$MESSAGE\"}" \
             "$SLACK_WEBHOOK_URL" && echo "Slack notification sent" || echo "::warning::Failed to send Slack notification"
+
+  ai-gherkin-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run AI analysis on feature files
+        run: node index.js
