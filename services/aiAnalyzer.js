@@ -7,7 +7,7 @@ export async function analyzeFeatureFile(filePath) {
   const content = fs.readFileSync(filePath, "utf8");
 
   const completion = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: "gpt-4-turbo",
     messages: [
       { role: "system", content: "Tu es un expert QA, donne des feedbacks sur un fichier Gherkin" },
       { role: "user", content: `Voici le fichier :\n${content}` },
