@@ -1,15 +1,20 @@
-// index.js
-require("dotenv").config();
-const path = require("path");
-const { getChangedFiles } = require("./services/githubClient");
-const { analyzeFeatureFile } = require("./services/aiAnalyzer");
-const { Octokit } = require("@octokit/rest");
+import dotenv from "dotenv";
+dotenv.config();
+
+import path from "path";
+import { fileURLToPath } from "url";
+import { getChangedFiles } from "./services/githubClient.js";
+import { analyzeFeatureFile } from "./services/aiAnalyzer.js";
+import { Octokit } from "@octokit/rest";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 const owner = process.env.GITHUB_REPOSITORY_OWNER;
 const repo = process.env.GITHUB_REPOSITORY.split("/")[1];
-const pull_number = process.env.PR_NUMBER;
+const pull_number = parseInt(process.env.PR_NUMBER, 10);
 
 (async () => {
   const changedFiles = await getChangedFiles(owner, repo, pull_number);
