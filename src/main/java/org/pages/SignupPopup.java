@@ -6,22 +6,25 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.utils.AccountFactory;
 
-import static org.junit.Assert.assertTrue;
-
 public class SignupPopup extends AbstractPage {
 
     private WebDriver driver;
 
     @FindBy(id = "sign-username")
     private WebElement usernameInput;
+
     @FindBy(id = "sign-password")
     private WebElement passwordInput;
+
     @FindBy(css = "button[onclick='register()']")
     private WebElement signUpButton;
+
     @FindBy(xpath = "//div[@id='signInModal']//div[@class='modal-content']//span[contains(text(), '×')]")
     private WebElement crossButton;
+
     @FindBy(xpath = "//div[@id='signInModal']//button[contains(text(), 'Close')]")
     private WebElement closeButton;
+
     @FindBy(id = "signInModalLabel")
     private WebElement signUpPopupTitle;
 
@@ -68,7 +71,9 @@ public class SignupPopup extends AbstractPage {
 
     public void signupTitleIsVisible() {
         waitForElementToBeVisible(signUpPopupTitle);
-        assertTrue("Signup popup title should be visible", signUpPopupTitle.isDisplayed());
+        if (!signUpPopupTitle.isDisplayed()) {
+            throw new IllegalStateException("Signup popup title should be visible");
+        }
         System.out.println("Signup popup is opened");
     }
 
