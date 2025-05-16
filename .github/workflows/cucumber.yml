@@ -121,7 +121,9 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
+        working-directory: ia-pr-reviewer
         run: npm install
 
       - name: Run AI analysis on feature files
+        working-directory: ia-pr-reviewer
         run: node index.js
