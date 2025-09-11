@@ -6,7 +6,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.junit.Assert;
 
 import java.time.Duration;
 
@@ -32,21 +31,17 @@ public class AbstractPage {
             wait.until(ExpectedConditions.alertIsPresent());
             String alertText = driver.switchTo().alert().getText();
             if (!alertText.equals(expectedAlertText.trim())) {
-                throw new AssertionError(errorMessage);
+                throw new IllegalStateException(errorMessage);
             }
             driver.switchTo().alert().accept();
         } catch (Exception e) {
-            Assert.fail("No alert found or error occurred: " + e.getMessage());  // Utilisation de Assert.fail() de JUnit 4
+            throw new RuntimeException("No alert found or error occurred: " + e.getMessage(), e);
         }
     }
 
     public void assertEquals(String expectedResult, String actualResult, String errorMessage) {
-        try {
-            if (!expectedResult.equals(actualResult)) {
-                throw new AssertionError(errorMessage);
-            }
-        } catch (Exception e) {
-            Assert.fail("Wrong result: " + e.getMessage());  // Utilisation de Assert.fail() de JUnit 4
+        if (!expectedResult.equals(actualResult)) {
+            throw new IllegalStateException(errorMessage + " (Expected: " + expectedResult + ", but was: " + actualResult + ")");
         }
     }
 }
