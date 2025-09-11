@@ -15,7 +15,7 @@ public class WebDriverManager {
             try {
                 FirefoxOptions options = new FirefoxOptions();
                 // Exécute Firefox en mode headless (sans interface graphique)
-                options.setHeadless(true); // True pour le mode headless
+                options.setHeadless(false); // True pour le mode headless
                 driver = new FirefoxDriver(options);
                 driver.manage().window().maximize(); // Maximiser la fenêtre, même en headless si nécessaire
             } catch (WebDriverException e) {
